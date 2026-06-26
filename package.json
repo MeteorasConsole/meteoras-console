@@ -1,0 +1,35 @@
+{
+  "name": "meteoras-console",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server:dev": "tsx server/index.ts",
+    "server:start": "tsx server/index.ts",
+    "build": "tsc -b && tsc -p tsconfig.server.json && vite build",
+    "cloudflare:preview": "npx wrangler dev",
+    "cloudflare:deploy": "npx wrangler deploy",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.10",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "@supabase/supabase-js": "^2.108.2",
+    "bn.js": "^5.2.3",
+    "bs58": "^6.0.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.0"
+  }
+}

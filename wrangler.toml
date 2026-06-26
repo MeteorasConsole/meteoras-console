@@ -1,0 +1,6 @@
+name = "meteoras-console"
+compatibility_date = "2026-06-25"
+
+[assets]
+directory = "./cloudflare-site"
+not_found_handling = "single-page-application"
