@@ -188,9 +188,11 @@ The API rate-limits requests by client IP and runs Solana simulation before retu
 
 The Token Brief panel includes a Pinata metadata agent. For a one-time upload, paste a Pinata JWT and gateway domain in the app, select token art, and run the agent; it uploads the image, uploads `metadata.json`, then fills `Metadata URI`. The app does not persist pasted Pinata credentials. For continuous runs, configure `PINATA_JWT` and `PINATA_GATEWAY` on the API server instead. Mainnet launches still need a metadata URI or `DEFAULT_TOKEN_METADATA_URI`.
 
-## Current Integration Point
+## Local mode vs. live backend
 
-The developer function names in `src/lib/functions.ts` are intentionally close to backend RPC/tool names:
+There are two layers, and both run today — the local one is no longer a placeholder.
+
+**Local functions (`src/lib/functions.ts`).** These deterministic functions run client-side on every launch to do pre-flight validation and drive the on-screen activity log. Their names mirror the backend RPC/tool names on purpose, so the local trace reads like the real call sequence:
 
 - `collect_launch_intent`
 - `validate_leftover_receiver`
@@ -201,7 +203,17 @@ The developer function names in `src/lib/functions.ts` are intentionally close t
 - `stage_leftover_receiver_routing`
 - `ready_for_one_click_launch`
 
-Swap the local deterministic functions with real API calls when the backend is ready.
+When `VITE_LAUNCH_API_BASE_URL` is **unset**, the app runs in local-only mode: it validates and previews but never touches the chain.
+
+**Live backend (the real endpoints).** When `VITE_LAUNCH_API_BASE_URL` **is** set, the local trace runs first, then the actual work goes through the backend:
+
+```
+prepare  → POST /api/launches/dry-run        (build + simulate real DBC txns)
+approve  → Phantom signs the prepared txns
+execute  → POST /api/launches/:id/execute    (broadcast, gated by ALLOW_MAINNET_EXECUTE)
+```
+
+The backend builds real unsigned transactions with the official **`@meteora-ag/dynamic-bonding-curve-sdk`** against the configured `RPC_URL` (e.g. Helius mainnet), runs Solana simulation, and persists prepared dry-runs/bundles to Supabase or `DATA_DIR`. The creator-fee, leftover-route, metadata, and bundler endpoints work the same prepare → approve → execute way. This is the path that runs in production — the deployed app points at the live API, so launches, fee claims, and bundles are real.
 
 ---
 
