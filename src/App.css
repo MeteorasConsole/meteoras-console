@@ -756,6 +756,19 @@ code {
   color: var(--white);
 }
 
+.button--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.button__icon {
+  width: 1.08rem;
+  height: 1.08rem;
+  flex: 0 0 auto;
+}
+
 .intro-card {
   position: relative;
   display: grid;
